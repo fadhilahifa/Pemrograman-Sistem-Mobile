@@ -21,18 +21,17 @@ class StockBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: _getBadgeColor().withOpacity(0.15),
+        color: _getBadgeColor(),
         border: Border.all(color: _getBadgeColor()),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         status,
         style: TextStyle(
-          fontSize: 12,
-          color: _getBadgeColor(),
-          fontWeight: FontWeight.bold,
+          fontSize: 10,
+          color: Colors.white,
         ),
       ),
     );

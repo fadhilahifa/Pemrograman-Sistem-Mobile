@@ -38,9 +38,21 @@ class Product {
     }
   }
 }
+
 // Class turunan DiscountedProduct
 class DiscountedProduct extends Product {
-  double discountPercent;
+  double get discountPercent {
+    switch (category) {
+      case 'Elektronik':
+        return 10.0;
+      case 'Fashion':
+        return 15.0;
+      case 'Makanan':
+        return 5.0;
+      default:
+        return 0.0;
+    }
+  }
 
   DiscountedProduct({
     required super.id,
@@ -50,7 +62,6 @@ class DiscountedProduct extends Product {
     required super.category,
     required super.stock,
     super.description,
-    required this.discountPercent,
   });
 
   // Method untuk menghitung harga final
@@ -204,7 +215,6 @@ void main() {
     category: 'Fashion',
     stock: 10,
     description: 'Kemeja flanel dengan harga promo.',
-    discountPercent: 15,
   );
 
   double hargaFinal =

@@ -20,82 +20,130 @@ class _ProductCardState extends State<ProductCard> {
   @override
   void initState() {
     super.initState();
-    //  initState() dipanggil
     print('LOG LIFECYCLE: initState() dipanggil pada produk ${widget.product.name}');
   }
 
   @override
   void dispose() {
-    //  dispose() dipanggil
     print('LOG LIFECYCLE: dispose() dipanggil pada produk ${widget.product.name}');
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    //  build() dipanggil (termasuk saat setState dipanggil)
     print('LOG LIFECYCLE: build() dipanggil pada produk ${widget.product.name}');
-
-    return Card(
-      clipBehavior: Clip.antiAlias, // untuk memotong konten yang melampaui batas Card
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-      child: Column(
+    final isDiscounted = widget.product is DiscountedProduct;
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 4.0),
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.15),
+            spreadRadius: 1,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Placeholder Gambar Produk
-          Container(
-            height: 150,
-            width: double.infinity,
-            color: Colors.amber[100],
-            child: const Icon(
-              Icons.shopping_bag,
-              size: 60,
-              color: Colors.grey,
-            ),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // 1. Layer Utama: Placeholder Gambar Produk
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: Container(
+                  height: 130, 
+                  width: 115,
+                  color: Colors.amber[100],
+                  child: const Icon(
+                    Icons.shopping_bag,
+                    size: 42,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              if (isDiscounted)
+                Positioned(
+                  top: 6.0,    // Jarak dari atas gambar
+                  right: 6.0,  // Jarak dari kanan gambar
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6.0,
+                      vertical: 2.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 240, 97, 87), // Warna badge diskon
+                      borderRadius: BorderRadius.circular(6.0),
+                    ),
+                    child: Text(
+                      'Diskon ${(widget.product as DiscountedProduct).discountPercent.toInt()}%',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10.0,
+                        
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 6.0, // Jarak dari bawah gambar
+                  left: 0.0,
+                  right: 0.0,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: StockBadge(status: widget.product.getStatusStok())
+                  ),
+                ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const SizedBox(width: 12.0),
+
+          // Detail Produk
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Nama Produk
-                    Text(
-                      widget.product.name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Text(
+                        widget.product.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
                     ),
-                    // Tombol Favorit (IconButton)
                     IconButton(
                       icon: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite ? const Color.fromARGB(255, 254, 110, 158) : Colors.grey,
+                        color: isFavorite
+                            ? const Color.fromARGB(255, 254, 110, 158)
+                            : Colors.grey,
                       ),
                       onPressed: () {
-                        // Memanggil setState() untuk merubah state lokal isFavorite
                         setState(() {
                           isFavorite = !isFavorite;
                         });
-                        print(
-                          'LOG EVENT: Tombol favorit ditekan! Status isFavorite: $isFavorite',
-                        );
                       },
                     ),
                   ],
                 ),
-                // Kategori Produk
+                const SizedBox(height: 4.0),
                 CategoryTag(category: widget.product.category),
-                const SizedBox(height: 2),
-                // Harga Produk
+                const SizedBox(height: 4.0),
                 PriceLabel(price: widget.product.price),
-                const SizedBox(height: 4),
-                // Status Stok
-                StockBadge(status: widget.product.getStatusStok()),
               ],
             ),
           ),
