@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/product_card.dart';
 import '../models/product.dart';
+import '../screens/product_detail_page.dart';
 
 class HomePage extends StatelessWidget {
    HomePage({super.key});
@@ -223,16 +224,15 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // Ikon Keranjang Belanja
+                  // Tombol login di pojok kanan atas
                   IconButton(
+                    icon: const Icon(Icons.login, size: 28),
+                    tooltip: 'Login',
                     onPressed: () {
-                      // Aksi keranjang
+                      // Navigasi ke halaman login
+                      Navigator.pushReplacementNamed(context, '/login');
                     },
-                    icon: const Icon(
-                      Icons.shopping_cart_outlined,
-                      size: 28,
-                    ),
-                  ),
+                  )
                 ],
               ),
               const SizedBox(height: 20),
@@ -243,7 +243,33 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 16.0),
                   itemBuilder: (context, index) {
                     final produk = daftarProduk[index];
-                    return ProductCard(product: produk);
+
+                    return InkWell(
+                      onTap: () async {
+                        final result = await Navigator.pushNamed(
+                          context,
+                          '/detail',
+                          arguments: produk,
+                        );
+                        if (result != null && context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Berhasil menambahkan $result item ${produk.name} ke keranjang!'),
+                              backgroundColor: Colors.green,
+                              duration: const Duration(seconds: 3),
+                              action: SnackBarAction(
+                                label: 'OK',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                },
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      child: ProductCard(product: produk),
+                    );
                   },
                 ),
               )

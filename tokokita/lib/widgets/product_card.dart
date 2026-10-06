@@ -33,14 +33,14 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     print('LOG LIFECYCLE: build() dipanggil pada produk ${widget.product.name}');
     final isDiscounted = widget.product is DiscountedProduct;
-    return Container(
+    return Container( // box nya
       margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 4.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
-          BoxShadow(
+          BoxShadow( // shadow box
             color: Colors.grey.withOpacity(0.15),
             spreadRadius: 1,
             blurRadius: 8,

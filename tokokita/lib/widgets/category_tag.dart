@@ -6,7 +6,7 @@ class CategoryTag extends StatelessWidget {
   const CategoryTag({Key? key, required this.category}) : super(key: key);
 
   // Method untuk menentukan warna berdasarkan nama kategori
-  Color _getTagColor() {
+  Color _getTagColor(String category) {
     switch (category.toLowerCase()) {
       case 'fashion':
         return const Color.fromARGB(255, 244, 138, 173);
@@ -22,18 +22,18 @@ class CategoryTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
       decoration: BoxDecoration(
-        color: _getTagColor().withOpacity(0.15),
+        color: _getTagColor(category).withOpacity(0.15),
         borderRadius: BorderRadius.circular(4.0),
-        border: Border.all(color: _getTagColor(), width: 1.0),
+        border: Border.all(color: _getTagColor(category), width: 1.0),
       ),
       child: Text(
         category,
         style: TextStyle(
           fontSize: 11.0,
           fontWeight: FontWeight.bold,
-          color: _getTagColor(),
+          color: _getTagColor(category),
         ),
       ),
     );
