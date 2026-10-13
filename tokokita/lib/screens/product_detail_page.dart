@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/cart_controller.dart';
 import '../models/product.dart';
 import '../widgets/category_tag.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final Product product;
 
-  const ProductDetailPage({
+    ProductDetailPage({
     Key? key,
     required this.product,
   }) : super(key: key);
@@ -16,6 +18,7 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   // State untuk menyimpan jumlah item yang dipilih sebelum masuk keranjang
+  final CartController cartController = Get.find();
   int _quantity = 1;
 
   @override
@@ -30,7 +33,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Get.back();
           },
         ),
       ),
@@ -232,10 +235,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     color: Colors.white,
                   ),
                 ),
-                // Jika stok > 0, jalankan Navigator.pop. Jika stok habis, onPressed bernilai null (tombol ter-disable).
+                // Setelah menambahkan produk ke keranjang, maka akan kembali ke halaman sebelumnya (Get.back()) dan menampilkan snackbar
                 onPressed: product.stock > 0
                     ? () {
-                        Navigator.pop(context, _quantity);
+                      Get.back(); 
+                      cartController.addToCart(product, quantity: _quantity);
                       }
                     : null,
               ),
