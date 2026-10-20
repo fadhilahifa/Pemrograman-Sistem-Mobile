@@ -18,6 +18,36 @@ class Product {
     required this.stock,
     this.description,
   });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    // Menentukan stok berdasarkan kategori produk dari API
+
+    double priceInUSD = (json['price'] as num).toDouble();
+    double priceInIDR = priceInUSD * 16000; 
+
+    String categoryName = json['category'] ?? '';
+    int assignedStock = 10; // Default untuk makanan / kategori lainnya
+
+    if (categoryName.toLowerCase().contains('electron') || categoryName == 'Elektronik') {
+      assignedStock = 5;
+    } else if (categoryName.toLowerCase().contains('clothing') || 
+               categoryName.toLowerCase().contains('jewelery') || 
+               categoryName == 'Fashion') {
+      assignedStock = 25;
+    }
+
+    return Product(
+      id: json['id'].toString(),
+      name: json['title'] ?? '', 
+      price: priceInIDR,
+      imageUrl: json['image'] ?? '',
+      category: categoryName,
+      stock: assignedStock,
+      description: json['description'],
+    );
+  }
+
+  
   // Informasi produk
   String get informasiProduk {
     return 'Nama Produk : $name\n'

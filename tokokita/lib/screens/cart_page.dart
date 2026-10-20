@@ -69,15 +69,24 @@ class CartPage extends StatelessWidget {
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
                         children: [
-                          Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.amber[100],
-                              borderRadius: BorderRadius.circular(8),
+                          // --- REVISI: Menampilkan Gambar Asli dari API ---
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              width: 60,
+                              height: 60,
+                              color: Colors.white,
+                              child: cartItem.product.imageUrl.startsWith('http')
+                                  ? Image.network(
+                                      cartItem.product.imageUrl,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (context, error, stackTrace) =>
+                                          const Icon(Icons.broken_image, color: Colors.grey),
+                                    )
+                                  : const Icon(Icons.shopping_bag, color: Colors.grey),
                             ),
-                            child: const Icon(Icons.shopping_bag, color: Colors.grey),
                           ),
+                          // ------------------------------------------------
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
@@ -85,10 +94,12 @@ class CartPage extends StatelessWidget {
                               children: [
                                 Text(
                                   cartItem.product.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                                 const SizedBox(height: 4),
-                                Text('Rp ${cartItem.product.price}'),
+                                Text('Rp ${cartItem.product.price.toStringAsFixed(0)}'),
                               ],
                             ),
                           ),
@@ -103,7 +114,7 @@ class CartPage extends StatelessWidget {
                                     border: Border.all(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
-                                  child: const Icon(Icons.remove, size: 9),
+                                  child: const Icon(Icons.remove, size: 12),
                                 ),
                               ),
                               Padding(
@@ -121,7 +132,7 @@ class CartPage extends StatelessWidget {
                                     border: Border.all(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
-                                  child: const Icon(Icons.add, size: 9),
+                                  child: const Icon(Icons.add, size: 12),
                                 ),
                               ),
                             ],
@@ -166,7 +177,7 @@ class CartPage extends StatelessWidget {
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'Rp ${cartController.totalPrice}',
+                        'Rp ${cartController.totalPrice.toStringAsFixed(0)}',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

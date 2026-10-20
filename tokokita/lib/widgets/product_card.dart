@@ -33,6 +33,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     print('LOG LIFECYCLE: build() dipanggil pada produk ${widget.product.name}');
     final isDiscounted = widget.product is DiscountedProduct;
+    
     return Container( // box nya
       margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 4.0),
       padding: const EdgeInsets.all(12.0),
@@ -55,20 +56,34 @@ class _ProductCardState extends State<ProductCard> {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              // 1. Layer Utama: Placeholder Gambar Produk
+              // 1. Layer Utama: Menampilkan Gambar dari URL API
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: Container(
                   height: 130, 
                   width: 115,
-                  color: Colors.amber[100],
-                  child: const Icon(
-                    Icons.shopping_bag,
-                    size: 42,
-                    color: Colors.grey,
-                  ),
+                  color: Colors.amber[50], // Background lembut untuk gambar
+                  child: widget.product.imageUrl.startsWith('http')
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.network(
+                            widget.product.imageUrl,
+                            fit: BoxFit.contain, // Agar gambar pas dan tidak terpotong
+                            errorBuilder: (context, error, stackTrace) => const Icon(
+                              Icons.broken_image,
+                              size: 42,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                      : const Icon(
+                          Icons.shopping_bag,
+                          size: 42,
+                          color: Colors.grey,
+                        ),
                 ),
               ),
+              // Badge Diskon (jika ada)
               if (isDiscounted)
                 Positioned(
                   top: 6.0,    // Jarak dari atas gambar
@@ -83,24 +98,24 @@ class _ProductCardState extends State<ProductCard> {
                       borderRadius: BorderRadius.circular(6.0),
                     ),
                     child: Text(
-                      'Diskon ${(widget.product as DiscountedProduct).discountPercent.toInt()}%',
+                     'Diskon ${(widget.product as DiscountedProduct).discountPercent.toInt()}%',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10.0,
-                        
                       ),
                     ),
                   ),
                 ),
-                Positioned(
-                  bottom: 6.0, // Jarak dari bawah gambar
-                  left: 0.0,
-                  right: 0.0,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: StockBadge(status: widget.product.getStatusStok())
-                  ),
+              // Status Stok
+              Positioned(
+                bottom: 6.0, // Jarak dari bawah gambar
+                left: 0.0,
+                right: 0.0,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: StockBadge(status: widget.product.getStatusStok()),
                 ),
+              ),
             ],
           ),
           const SizedBox(width: 12.0),
