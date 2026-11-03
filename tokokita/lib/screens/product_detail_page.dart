@@ -79,7 +79,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     borderRadius: BorderRadius.circular(16.0),
                     child: Stack(
                       children: [
-                        // Container dengan background putih & border tipis agar foto terbingkai rapi
                         Container(
                           height: 250,
                           width: double.infinity,
@@ -119,7 +118,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 borderRadius: BorderRadius.circular(6.0),
                               ),
                               child: Text(
-                                'Diskon ${(product as DiscountedProduct).discountPercent.toInt()}%',
+                                'Diskon ${product.discountPercent.toInt()}%',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 11.0,

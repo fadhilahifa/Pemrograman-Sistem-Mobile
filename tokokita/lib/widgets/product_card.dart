@@ -6,17 +6,21 @@ import 'category_tag.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;
+  final bool isFavorite; 
+  final VoidCallback onFavoriteToggle; 
 
-  const ProductCard({Key? key, required this.product}) : super(key: key);
+  const ProductCard({
+    Key? key,
+    required this.product,
+    required this.isFavorite,
+    required this.onFavoriteToggle,
+  }) : super(key: key);
 
   @override
   State<ProductCard> createState() => _ProductCardState();
 }
 
 class _ProductCardState extends State<ProductCard> {
-  // Status lokal untuk menyimpan status favorit
-  bool isFavorite = false;
-
   @override
   void initState() {
     super.initState();
@@ -34,14 +38,14 @@ class _ProductCardState extends State<ProductCard> {
     print('LOG LIFECYCLE: build() dipanggil pada produk ${widget.product.name}');
     final isDiscounted = widget.product is DiscountedProduct;
     
-    return Container( // box nya
+    return Container( // Box utama
       margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 4.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
-          BoxShadow( // shadow box
+          BoxShadow( // Shadow box
             color: Colors.grey.withOpacity(0.15),
             spreadRadius: 1,
             blurRadius: 8,
@@ -62,13 +66,13 @@ class _ProductCardState extends State<ProductCard> {
                 child: Container(
                   height: 130, 
                   width: 115,
-                  color: Colors.amber[50], // Background lembut untuk gambar
+                  color: Colors.amber[50], 
                   child: widget.product.imageUrl.startsWith('http')
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Image.network(
                             widget.product.imageUrl,
-                            fit: BoxFit.contain, // Agar gambar pas dan tidak terpotong
+                            fit: BoxFit.contain, 
                             errorBuilder: (context, error, stackTrace) => const Icon(
                               Icons.broken_image,
                               size: 42,
@@ -86,19 +90,19 @@ class _ProductCardState extends State<ProductCard> {
               // Badge Diskon (jika ada)
               if (isDiscounted)
                 Positioned(
-                  top: 6.0,    // Jarak dari atas gambar
-                  right: 6.0,  // Jarak dari kanan gambar
+                  top: 6.0,    
+                  right: 6.0,  
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 6.0,
                       vertical: 2.0,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 240, 97, 87), // Warna badge diskon
+                      color: const Color.fromARGB(255, 240, 97, 87),
                       borderRadius: BorderRadius.circular(6.0),
                     ),
                     child: Text(
-                     'Diskon ${(widget.product as DiscountedProduct).discountPercent.toInt()}%',
+                      'Diskon ${(widget.product as DiscountedProduct).discountPercent.toInt()}%',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10.0,
@@ -108,7 +112,7 @@ class _ProductCardState extends State<ProductCard> {
                 ),
               // Status Stok
               Positioned(
-                bottom: 6.0, // Jarak dari bawah gambar
+                bottom: 6.0,
                 left: 0.0,
                 right: 0.0,
                 child: FittedBox(
@@ -142,16 +146,12 @@ class _ProductCardState extends State<ProductCard> {
                     ),
                     IconButton(
                       icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite
+                        widget.isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: widget.isFavorite
                             ? const Color.fromARGB(255, 254, 110, 158)
                             : Colors.grey,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          isFavorite = !isFavorite;
-                        });
-                      },
+                      onPressed: widget.onFavoriteToggle, 
                     ),
                   ],
                 ),
